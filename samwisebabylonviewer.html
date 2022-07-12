@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+    </head>
+    <body>
+        <table width="100%">
+        <tr><td>Enter GLB URI: <button onclick="myFunction()">Try it</button></td></tr>
+        <tr>
+        <td><input type="text" size=200 value="https://cdn-content-ingress.altvr.com/uploads/model/gltf/1691175786641359242/GRIMECRAFT_Master_Sword.glb" id="uriid" name="uriname"></td></tr>
+        <tr>
+        <td>
+        <babylon id="objecturi" name="objectName" model="https://cdn-content-ingress.altvr.com/uploads/model/gltf/1827915156126958228/offyellowcube.glb"></babylon>
+        </td>
+        </tr>
+    </table>
+
+    <script>
+        function myFunction() {
+          let getit = document.getElementById("uriid").value;
+          console.log(getit);
+          document.getElementById("objecturi").model = getit;
+          //location.reload();
+          BabylonViewer.viewerManager
+            .getViewerPromiseById("objecturi")
+            .then(function (viewer) {
+                // this will resolve only after the viewer with this specific ID is initialized
+                viewer.loadModel({
+                //url must take some variable/function not string of path
+                url: getit, 
+                });
+            });
+        }
+        </script>
+
+    </body>
+</html>
