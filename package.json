@@ -1,0 +1,19 @@
+{
+  "name": "myfirstbabylonjsapp",
+  "version": "1.0.0",
+  "description": "You can use the [editor on GitHub](https://github.com/SamwiseLA/MyFirstBabylonjsApp/edit/main/README.md) to maintain and preview the content for your website in Markdown files.",
+  "main": "babylonsetup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamwiseLA/MyFirstBabylonjsApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SamwiseLA/MyFirstBabylonjsApp/issues"
+  },
+  "homepage": "https://github.com/SamwiseLA/MyFirstBabylonjsApp#readme"
+}

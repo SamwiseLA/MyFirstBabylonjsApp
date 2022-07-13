@@ -1,3 +1,24 @@
+var canvas = document.getElementById("renderCanvas");
+
+var startRenderLoop = function (engine, canvas) {
+  engine.runRenderLoop(function () {
+    if (sceneToRender && sceneToRender.activeCamera) {
+      sceneToRender.render();
+    }
+  });
+};
+
+var engine = null;
+var scene = null;
+var sceneToRender = null;
+var createDefaultEngine = function () {
+  return new BABYLON.Engine(canvas, true, {
+    preserveDrawingBuffer: true,
+    stencil: true,
+    disableWebGL2Support: false,
+  });
+};
+
 const createScene = function () {
   const radian = 0.0174533;
 
@@ -25,22 +46,12 @@ const createScene = function () {
     "both_houses_scene.babylon"
   );
 
-  var yeti1 = null;
-  var yeti2 = null;
-  var alien1 = null;
-
-  // My attempt to color the sphere
-  var materialRed = new BABYLON.StandardMaterial(scene);
-  materialRed.alpha = 1;
-  materialRed.diffuseColor = new BABYLON.Color3(1.0, 0, 0);
-
-  BABYLON.SceneLoader.ImportMesh(
+  const yeti1 = BABYLON.SceneLoader.ImportMesh(
     "",
     Assets.meshes.Yeti.rootUrl,
     Assets.meshes.Yeti.filename,
     scene,
     function (newMeshes) {
-      yeti1 = newMeshes[0]
       newMeshes[0].position = new BABYLON.Vector3(-1.2, 0, 0);
       newMeshes[0].scaling = new BABYLON.Vector3(0.025, 0.04, 0.04);
       newMeshes[0].rotation = new BABYLON.Vector3(
@@ -51,13 +62,12 @@ const createScene = function () {
     }
   );
 
-  BABYLON.SceneLoader.ImportMesh(
+  const yeti2 = BABYLON.SceneLoader.ImportMesh(
     "",
     Assets.meshes.Yeti.rootUrl,
     Assets.meshes.Yeti.filename,
     scene,
     function (newMeshes) {
-      yeti2 = newMeshes[0]
       newMeshes[0].position = new BABYLON.Vector3(3, 0, 0);
       newMeshes[0].scaling = new BABYLON.Vector3(0.025, 0.04, 0.04);
       newMeshes[0].rotation = new BABYLON.Vector3(
@@ -68,13 +78,12 @@ const createScene = function () {
     }
   );
 
-  BABYLON.SceneLoader.ImportMesh(
+  const yeti3 = BABYLON.SceneLoader.ImportMesh(
     "",
     Assets.meshes.Alien.rootUrl,
     Assets.meshes.Alien.filename,
     scene,
     function (newMeshes) {
-      alien1 = newMeshes[0]
       newMeshes[0].position = new BABYLON.Vector3(1, 2, -.5);
       newMeshes[0].scaling = new BABYLON.Vector3(1, 1, 1);
       newMeshes[0].rotation = new BABYLON.Vector3(
@@ -85,30 +94,33 @@ const createScene = function () {
     }
   );
 
-  const startWallX = -.25;
-  for (i=0;i<25;i++) {
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: .1}, scene);
-    sphere.material = materialRed;
-    sphere.position = new BABYLON.Vector3((i * .1) + startWallX, 0, -1);
-  }
-  for (i=0;i<25;i++) {
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: .1}, scene);
-    sphere.material = materialRed;
-    sphere.position = new BABYLON.Vector3((i * .1) + startWallX, 0, 1);
-  }
-  for (i=0;i<20;i++) {
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: .1}, scene);
-    sphere.material = materialRed;
-    sphere.position = new BABYLON.Vector3(startWallX, 0, (i *.1) + -1);
-  }
-  for (i=0;i<20;i++) {
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: .1}, scene);
-    sphere.material = materialRed;
-    sphere.position = new BABYLON.Vector3(2.15, 0, (i *.1) + -1);
-  }
-
-
   //yeti3.newMeshes[0].position = new BABYLON.Vector3(1, -1, 0);
 
   return scene;
 };
+window.initFunction = async function () {
+  var asyncEngineCreation = async function () {
+    try {
+      return createDefaultEngine();
+    } catch (e) {
+      console.log(
+        "the available createEngine function failed. Creating the default engine instead"
+      );
+      return createDefaultEngine();
+    }
+  };
+
+  window.engine = await asyncEngineCreation();
+  if (!engine) throw "engine should not be null.";
+
+  startRenderLoop(engine, canvas);
+  window.scene = createScene();
+};
+initFunction().then(() => {
+  sceneToRender = scene;
+});
+
+// Resize
+window.addEventListener("resize", function () {
+  engine.resize();
+});
